@@ -28,6 +28,9 @@ const createUser = async (payload) => {
 exports.createUser = createUser;
 const removeUser = async (id) => {
     try {
+        await db_1.prisma.history.deleteMany({
+            where: { userId: id },
+        });
         await db_1.prisma.user.delete({
             where: { id },
         });

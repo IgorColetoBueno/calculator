@@ -21,14 +21,15 @@ userRoutes.post("/register", (0, validation_1.validationMiddleware)(user_2.userR
         res.status(500).json(error);
     }
 });
-userRoutes.delete("/delete/:id", passport_1.default.authenticate("bearer", { session: false }), async (req, res) => {
+userRoutes.delete("/delete", passport_1.default.authenticate("bearer", { session: false }), async (req, res) => {
     try {
-        const payload = req.params.id;
+        const payload = req.user.id;
+        console.log(payload);
         (0, user_1.removeUser)(+payload);
         res.status(200).json({});
     }
     catch (error) {
-        res.status(500).json({ error: "Error registering user" });
+        res.status(500).json({ error: "Error on user delete" });
     }
 });
 userRoutes.get("/me", passport_1.default.authenticate("bearer", { session: false }), async (req, res) => {
@@ -36,7 +37,7 @@ userRoutes.get("/me", passport_1.default.authenticate("bearer", { session: false
         res.json(req.user);
     }
     catch (error) {
-        res.status(500).json({ error: "Error registering user" });
+        res.status(500).json({ error: "Error getting the user" });
     }
 });
 exports.default = userRoutes;

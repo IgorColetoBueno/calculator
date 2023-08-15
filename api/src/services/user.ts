@@ -25,6 +25,9 @@ export const createUser = async (payload: Omit<User, "id">) => {
 
 export const removeUser = async (id: number) => {
   try {
+    await prisma.history.deleteMany({
+      where: { userId: id },
+    });
     await prisma.user.delete({
       where: { id },
     });
@@ -35,7 +38,6 @@ export const removeUser = async (id: number) => {
 
 export const getUser = async (id: number) => {
   try {
-    console.log(id)
     return await prisma.user.findUnique({
       where: { id },
       select: {
