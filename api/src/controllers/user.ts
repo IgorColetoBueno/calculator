@@ -36,7 +36,7 @@ userRoutes.delete(
 
       res.status(200).json({});
     } catch (error) {
-      res.status(500).json({ error: "Error registering user" });
+      res.status(500).json({ error: "Error on user delete" });
     }
   }
 );
@@ -48,7 +48,7 @@ userRoutes.get(
     try {
       res.json(req.user);
     } catch (error) {
-      res.status(500).json({ error: "Error registering user" });
+      res.status(500).json({ error: "Error getting the user" });
     }
   }
 );

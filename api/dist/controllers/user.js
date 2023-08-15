@@ -28,7 +28,7 @@ userRoutes.delete("/delete/:id", passport_1.default.authenticate("bearer", { ses
         res.status(200).json({});
     }
     catch (error) {
-        res.status(500).json({ error: "Error registering user" });
+        res.status(500).json({ error: "Error on user delete" });
     }
 });
 userRoutes.get("/me", passport_1.default.authenticate("bearer", { session: false }), async (req, res) => {
@@ -36,7 +36,7 @@ userRoutes.get("/me", passport_1.default.authenticate("bearer", { session: false
         res.json(req.user);
     }
     catch (error) {
-        res.status(500).json({ error: "Error registering user" });
+        res.status(500).json({ error: "Error getting the user" });
     }
 });
 exports.default = userRoutes;
