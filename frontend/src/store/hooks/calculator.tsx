@@ -1,16 +1,21 @@
+import useApiClient from "@/hooks/useAxios";
+import { History } from "@/model/history";
 import { useAtom } from "jotai";
-import { calcAtom, calcHistoryAtom, calcInMemoryAtom } from "..";
-import { useCallback } from "react";
 import Mexp from "math-expression-evaluator";
+import { useCallback, useEffect } from "react";
+import { calcAtom, calcHistoryAtom, calcInMemoryAtom } from "..";
+import { useAuthSession } from "./auth";
 
 const mexp = new Mexp();
-// const memoryOperators = ["M-", "M+", "MC", "MR"];
-// const mathOperators = ["+", "-", "÷", "%", "√"];
 const operatorsThatMustGetTheResultOnStart = ["+", "-", "÷", "x", "^"];
+const CALC_ERROR = "An error ocurred";
+
 export const useCalculator = () => {
   const [currentCalc, setCurrentCalc] = useAtom(calcAtom);
   const [history, setHistory] = useAtom(calcHistoryAtom);
   const [inMemory, setInMemory] = useAtom(calcInMemoryAtom);
+  const { user } = useAuthSession();
+  const { axios } = useApiClient();
 
   const onDigitSet = useCallback(
     (digit: string) => {
@@ -86,6 +91,7 @@ export const useCalculator = () => {
             var result = mexp.postfixEval(postfixed, {});
             setCurrentCalc({ result, calc: "" });
             setHistory([...history, { result, calc: currentCalc.calc }]);
+            addToHistory({ result, calc: currentCalc.calc });
             break;
 
           default:
@@ -106,11 +112,39 @@ export const useCalculator = () => {
             }
         }
       } catch (error) {
-        setCurrentCalc({ calc: "An error ocurred, try again", result: 0 });
+        setCurrentCalc({ calc: CALC_ERROR, result: 0 });
+        setTimeout(() => onDigitSet("C"), 1500);
       }
     },
     [currentCalc]
   );
+
+  const fetchHistory = useCallback(async () => {
+    try {
+      const historyResponse = await axios.get<History[]>("history");
+      setHistory(historyResponse.data);
+    } catch (error) {}
+  }, []);
+
+  const addToHistory = useCallback(
+    async (history: History) => {
+      // try add but without throw error if it occur
+      try {
+        // dont do the save if is not logged in
+        if (!user) {
+          return;
+        }
+        await axios.post("history/new", history);
+      } catch (error) {}
+    },
+    [user]
+  );
+
+  useEffect(() => {
+    if (user) {
+      fetchHistory();
+    }
+  }, [user]);
 
   return { onDigitSet };
 };

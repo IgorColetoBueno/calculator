@@ -1,6 +1,6 @@
 import express from "express";
 import { validationMiddleware } from "../config/validation";
-import { UserRegister } from "../model/user";
+import { UserPublicData, UserRegister } from "../model/user";
 import { createUser, getUser, removeUser } from "../services/user";
 import { userRegisterSchema } from "../validation/user";
 import passport from "passport";
@@ -26,12 +26,13 @@ userRoutes.post(
 );
 
 userRoutes.delete(
-  "/delete/:id",
+  "/delete",
   passport.authenticate("bearer", { session: false }),
   async (req, res) => {
     try {
-      const payload = req.params.id;
+      const payload = (req.user as UserPublicData).id
 
+      console.log(payload)
       removeUser(+payload);
 
       res.status(200).json({});

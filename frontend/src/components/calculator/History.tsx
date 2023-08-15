@@ -1,8 +1,7 @@
+import { History } from "@/model/history";
 import { calcAtom, calcHistoryAtom } from "@/store";
 import { useAtom } from "jotai";
 import Typography from "../typography";
-import { History } from "@/model/history";
-import { MouseEventHandler } from "react";
 
 interface CalculatorHistoryProps {}
 

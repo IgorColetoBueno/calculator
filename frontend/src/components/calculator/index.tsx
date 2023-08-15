@@ -1,5 +1,5 @@
 "use client";
-import { useCalculator } from "@/store/hooks";
+import { useCalculator } from "@/store/hooks/calculator";
 import CalculatorDisplay from "./Display";
 import CalculatorTile from "./Tile";
 import CalculatorHistory from "./History";

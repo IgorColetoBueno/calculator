@@ -1,8 +1,7 @@
 import express from "express";
-import { login } from "../services/auth";
 import { validationMiddleware } from "../config/validation";
+import { login } from "../services/auth";
 import { userRegisterSchema } from "../validation/user";
-import { prisma } from "../config/db";
 
 const authRoutes = express.Router();
 
@@ -16,8 +15,11 @@ authRoutes.post(
       return res.status(200).json({
         token,
       });
-    } catch (error) {
-      res.status(400).json({ error });
+    } catch (error: any) {
+      if ((error.message = "Invalid credentials")) {
+        return res.status(401).json({ error });
+      }
+      res.status(50).json({ error });
     }
   }
 );

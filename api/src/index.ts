@@ -5,13 +5,29 @@ import AuthConfig from "./config/auth";
 import authRoutes from "./controllers/auth";
 import userRoutes from "./controllers/user";
 import historyRoutes from "./controllers/history";
+import cors, { CorsOptions } from "cors";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(passport.initialize());
-AuthConfig.config()
+AuthConfig.config();
+
+const whitelist = ["http://localhost:3000"];
+
+const corsOptions = {
+  origin: function (origin: string, callback: any) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+// Use the cors middleware with configured options
+app.use(cors(corsOptions as CorsOptions));
 
 const port = process.env.API_PORT;
 

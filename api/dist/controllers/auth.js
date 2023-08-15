@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const auth_1 = require("../services/auth");
 const validation_1 = require("../config/validation");
+const auth_1 = require("../services/auth");
 const user_1 = require("../validation/user");
 const authRoutes = express_1.default.Router();
 authRoutes.post("/login", (0, validation_1.validationMiddleware)(user_1.userRegisterSchema), async (req, res) => {
@@ -16,7 +16,10 @@ authRoutes.post("/login", (0, validation_1.validationMiddleware)(user_1.userRegi
         });
     }
     catch (error) {
-        res.status(400).json({ error });
+        if ((error.message = "Invalid credentials")) {
+            return res.status(401).json({ error });
+        }
+        res.status(50).json({ error });
     }
 });
 exports.default = authRoutes;

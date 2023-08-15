@@ -21,9 +21,10 @@ userRoutes.post("/register", (0, validation_1.validationMiddleware)(user_2.userR
         res.status(500).json(error);
     }
 });
-userRoutes.delete("/delete/:id", passport_1.default.authenticate("bearer", { session: false }), async (req, res) => {
+userRoutes.delete("/delete", passport_1.default.authenticate("bearer", { session: false }), async (req, res) => {
     try {
-        const payload = req.params.id;
+        const payload = req.user.id;
+        console.log(payload);
         (0, user_1.removeUser)(+payload);
         res.status(200).json({});
     }
